@@ -3,7 +3,7 @@ FROM node:21
 
 WORKDIR /app
 
-COPY . .
+COPY /home/ubuntu/workspace/docker/backend/. .
 
 RUN npm i
 # comment
