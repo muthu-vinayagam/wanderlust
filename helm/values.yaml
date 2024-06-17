@@ -1,0 +1,21 @@
+frontend:
+  image: muthuvinayagam92/frontend:latest
+  replicaCount: 1
+  service:
+    type: NodePort
+    port: 5173
+
+backend:
+  image: muthuvinayagam92/backend:latest
+  replicaCount: 1
+  service:
+    type: NodePort
+    port: 8080
+
+mongo:
+  image: mongo:latest
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 27017
+
