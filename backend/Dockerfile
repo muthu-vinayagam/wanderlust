@@ -7,8 +7,19 @@ COPY . .
 
 RUN npm i
 # comment
-COPY .env.sample .env
+#COPY .env.sample .env
 
+ENV PORT=8080 \
+    MONGODB_URI="mongodb://mongo:27017/wanderlust" \
+    REDIS_URL="redis://127.0.0.1:6379" \
+    FRONTEND_URL="http://43.205.206.167:32324" \
+    ACCESS_COOKIE_MAXAGE=120000 \
+    ACCESS_TOKEN_EXPIRES_IN='120s' \
+    REFRESH_COOKIE_MAXAGE=120000 \
+    REFRESH_TOKEN_EXPIRES_IN='120s' \
+    JWT_SECRET=70dd8b38486eee723ce2505f6db06f1ee503fde5eb06fc04687191a0ed665f3f98776902d2c89f6b993b1c579a87fedaf584c693a106f7cbf16e8b4e67e9d6df \
+    NODE_ENV=Development
+    
 EXPOSE 8080
 
 ENTRYPOINT npm start
