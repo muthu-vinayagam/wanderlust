@@ -7,7 +7,7 @@ COPY . .
 
 RUN npm i
 # comment
-COPY ./backend/.env.sample .env
+COPY .env.sample .env
 
 EXPOSE 8080
 
