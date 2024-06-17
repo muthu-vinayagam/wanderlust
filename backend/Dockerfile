@@ -7,7 +7,7 @@ COPY . .
 
 RUN npm i
 
-COPY .env.sample .env
+COPY ~/wanderlust/backend/.env.sample .env
 
 EXPOSE 8080
 
