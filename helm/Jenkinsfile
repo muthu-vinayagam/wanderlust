@@ -1,0 +1,70 @@
+pipeline {
+    agent {
+        label 'minikube'  // Runs on an agent labeled 'minikube'
+    }
+    parameters {
+        choice(name: 'action', choices: ['install', 'uninstall'], description: 'Select action to perform')
+    }
+
+    environment {
+        GIT_REPO_URL = 'https://github.com/muthu-vinayagam/wanderlust.git' // Replace with your repository URL
+        GIT_BRANCH = 'main' // Replace with your branch name
+        GIT_CREDENTIALS_ID = 'git-secret' // Replace with the ID of your Jenkins credentials
+    }
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                echo 'Cleaning the workspace...'
+                deleteDir()  // Cleans the workspace
+            }
+        }
+        
+        stage('Clone Repository') {
+            steps {
+                echo 'Cloning the repository...'
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: env.GIT_BRANCH]],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [],
+                    submoduleCfg: [],
+                    userRemoteConfigs: [[
+                        url: env.GIT_REPO_URL,
+                        credentialsId: env.GIT_CREDENTIALS_ID
+                    ]]
+                ])
+            }
+        }
+        stage('install Resources to EKS') {
+            when {
+                expression { params.action == 'install' }
+            }
+            steps {
+                echo 'Applying resources...'
+                sh 'helm install myappnew ./helm'
+            }
+        }
+
+        stage('uninstall Resources to EKS') {
+            when {
+                expression { params.action == 'uninstall' }
+            }
+            steps {
+                echo 'uninstalling the resourse created'
+                script {
+                    sh "helm uninstall myappnew ./helm"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Successfully deployed to EKS.'
+        }
+        failure {
+            echo 'Failed to deploy to EKS.'
+        }
+    }
+}
